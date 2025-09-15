@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Email Auth Template {% if is_authorised %}{{ email }}{% else %}Platform{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="/" class="brand">STEALTH</a>
+        </div>
+        <div class="nav-right">
+            {% block header %}
+            {% if is_authorised %}
+            <!-- User is logged in -->
+            <a href="/courses" class="nav-link">Courses</a>
+            <a href="/profile" class="nav-link">Profile</a>
+            <button class="big-btn-outline" onclick="signOut()">Sign Out</button>
+            {% else %}
+            <!-- Guest user -->
+            <a href="/" class="nav-link">Home</a>
+            <a href="/courses" class="nav-link">Courses</a>
+            <button class="big-btn-outline" onclick="openLogin()">Login</button>
+            {% endif %}
+            {% endblock %}
+        </div>
+    </header>
+
+    <!-- Login Logout UI tweaks -->
+    <div id="overlay" class="overlay">
+        <!-- Login Panel -->
+        <div id="login-panel" class="slide-panel active">
+            <h2>Login</h2>
+            <input type="email" id="login-email" placeholder="Email" /><br />
+            <input type="password" id="login-password" placeholder="Password" /><br />
+            <button onclick="signIn()">Login</button>
+            <p>
+                <a href="#" onclick="switchToSignup(event)">Don’t have an account? Sign up</a>
+            </p>
+        </div>
+
+        <!-- Signup Panel -->
+        <div id="signup-panel" class="slide-panel active">
+            <h2>Sign Up</h2>
+            <input type="email" id="signup-email" placeholder="Email" /><br />
+            <input type="password" id="signup-password" placeholder="Password" /><br />
+            <button onclick="signUp()">Sign Up</button>
+            <p>
+                <a href="#" onclick="switchToLogin(event)">Already have an account? Login</a>
+            </p>
+        </div>
+    </div>
+    <!-- Signup Sliding Panels -->
+
+    <!-- Main Section will be defined in designated pages -->
+    <!-- main block should be in main-content  -->
+    <main>
+        {% block mainContent %}{% endblock %}
+    </main>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDCegzr_CbnqvvGwNcuAO6bujjQwLO6Ui8",
+            authDomain: "project-x-cc931.firebaseapp.com",
+            projectId: "project-x-cc931",
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Sign up
+        function signUp() {
+            const email = document.getElementById("signup-email").value;
+            const password = document.getElementById("signup-password").value;
+            //const name = document.getElementById("signup-name").value;
+
+            // Create the user with email and password
+            auth
+                .createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    // Update the user's profile with the name
+                    return user.updateProfile({
+                        displayName: name,
+                    });
+                })
+                .then(() => {
+                    const user = auth.currentUser;
+
+                    // Send email verification
+                    user.sendEmailVerification().then(() => {
+                        alert(
+                            "Signup successful! Please check your email to verify your account."
+                        );
+                    });
+                })
+                .catch((error) => alert(error.message));
+        }
+
+        // Log in 
+        function signIn() {
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+
+            auth
+                .signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    if (!user.emailVerified) {
+                        alert("Please verify your email before logging in.");
+                        auth.signOut();
+                        return;
+                    }
+
+                    return user.getIdToken();
+                })
+                .then((token) => {
+                    if (!token) return;
+                    fetch("/set_token", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ token: token }),
+                    }).then((res) => {
+                        if (res.ok) {
+                            window.location.href = "/home";
+                        } else {
+                            alert("Login failed on server side.");
+                        }
+                    });
+                })
+                .catch((error) => alert(error.message));
+        }
+
+        // Signout function
+        function signOut() {
+            auth.signOut().then(() => {
+                console.log("Signed out from Firebase");
+
+                fetch("/logout", {
+                    method: "POST",
+                    credentials: "include"
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            window.location.href = "/";
+                        } else {
+                            alert("Logout failed on server side.");
+                        }
+                    });
+            }).catch((error) => {
+                alert("Error signing out: " + error.message);
+            });
+        }
+
+        // Login issue fix
+        // Overlay + Panels for login signup
+        const overlay = document.getElementById("overlay");
+        const loginPanel = document.getElementById("login-panel");
+        const signupPanel = document.getElementById("signup-panel");
+
+        function openLogin() {
+            overlay.style.display = "block";
+            loginPanel.classList.add("active");
+            signupPanel.classList.remove("active");
+        }
+
+        function openSignup() {
+            overlay.style.display = "block";
+            signupPanel.classList.add("active");
+            loginPanel.classList.remove("active");
+        }
+
+        function switchToLogin(event) {
+            if (event) event.preventDefault();
+            signupPanel.classList.remove("active");
+            loginPanel.classList.add("active");
+        }
+
+        function switchToSignup(event) {
+            if (event) event.preventDefault();
+            loginPanel.classList.remove("active");
+            signupPanel.classList.add("active");
+        }
+
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) {
+                // prevent accidental close if user clicks inside panel
+                overlay.style.display = "none";
+                loginPanel.classList.remove("active");
+                signupPanel.classList.remove("active");
+            }
+        });
+
+    </script>
+</body>
+
+</html>

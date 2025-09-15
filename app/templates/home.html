@@ -1,0 +1,20 @@
+
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block mainContent %}
+
+    <!-- Hero / Home Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h2>Welcome, {{ name or "Need to update" }}</h2>
+            <h1>Welcome to <span class="highlight">STEALTH</span></h1>
+            <p>Learn, Explore, and Master your skills.</p>
+
+            <p><span class="label">Email:</span> {{ email }}</p>
+            <p><span class="label">Twitter ID:</span> {{ twitter_id or "Not set yet" }}</p>
+        </div>
+    </section>
+
+{% endblock %}

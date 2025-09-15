@@ -1,0 +1,36 @@
+
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block header %}
+    <div class="nav-link">
+            <div><strong>{{ name or "Anonymous User" }}</strong></div>
+    </div>
+    <a href="/home" class="nav-link">Home</a>
+    <a href="/courses" class="nav-link">Courses</a>
+    <button class="big-btn-outline" onclick="toggleForm('profileForm')">Edit Profile</button>
+    <button class="big-btn-outline" onclick="signOut()">Sign Out</button>
+
+{% endblock %}
+
+{% block mainContent %}
+
+        <h2>Welcome, {{ name or "Need to update" }}</h2>
+        <p><span class="label">Email:</span> {{ email }}</p>
+
+        <!-- Hidden forms -->
+        <form id="profileForm" action="/profile" method="POST" style="display:none;">
+            <h3>Edit Profile</h3>
+            <input type="text" name="name" placeholder="Enter your name" required>
+            <button type="submit">Save</button>
+        </form>
+    <script>
+        // form toggle for updating profile.
+        function toggleForm(formId) {
+            const form = document.getElementById(formId);
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,184 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background: #f9f9f9;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2c3e50;
+  padding: 12px 20px;
+}
+
+.navbar .brand {
+  font-size: 20px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-right .nav-link {
+  margin-left: 20px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.nav-right .nav-link:hover {
+  color: #f39c12;
+}
+
+/* Hero Section */
+.hero {
+  background: url("https://images.pexels.com/photos/434337/pexels-photo-434337.jpeg")
+    no-repeat center center/cover;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-content {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.hero-content .highlight {
+  color: #f39c12;
+}
+
+.hero-buttons {
+  margin-top: 20px;
+}
+
+.big-btn,
+.big-btn-outline {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.big-btn {
+  background: #27ae60;
+  color: #fff;
+}
+
+.big-btn:hover {
+  background: #1e8449;
+}
+
+.big-btn-outline {
+  border: 2px solid #ffffff;
+  background: #27ae60;
+  color: #fff;
+}
+
+.big-btn-outline:hover {
+  background: #fff;
+  color: #333;
+}
+
+/* Sections */
+.form-section,
+.placeholder {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.form-section input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-section button {
+  padding: 10px 20px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.form-section button:hover {
+  background: #2980b9;
+}
+
+
+/* Overlay background */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  z-index: 998;
+}
+
+/* overlay panels (login left, signup right) */
+
+.slide-panel {
+  display: none;
+  background: #fff;
+  padding: 2rem;
+  max-width: 400px;
+  margin: 5% auto;
+  border-radius: 10px;
+  position: relative;
+  z-index: 1001;
+}
+
+.slide-panel.active {
+  display: block;
+}
+
+.slide-panel h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.slide-panel input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.slide-panel button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.slide-panel button:hover {
+  background: #2980b9;
+}
